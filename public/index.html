@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - College Portal</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    body { background: #e2e8f0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 330px; }
+    h2 { text-align: center; color: #1e3a8a; margin-bottom: 20px; }
+    .field { margin-bottom: 15px; }
+    label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #475569; }
+    input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+    button { width: 100%; padding: 10px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+    button:hover { background: #1d4ed8; }
+    .hint { margin-top: 15px; font-size: 12px; background: #f8fafc; padding: 10px; border-radius: 6px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>College Portal</h2>
+    <div class="field">
+      <label>Login As</label>
+      <select id="role">
+        <option value="student">Student</option>
+        <option value="admin">Admin / Teacher</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Username">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Password">
+    </div>
+    <button onclick="login()">Login</button>
+    <div class="hint">
+      <b>Admin:</b> admin / admin123<br>
+      <b>Student:</b> student / student123
+    </div>
+  </div>
+
+  <script>
+    async function login() {
+      const role = document.getElementById('role').value;
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role, username, password })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        sessionStorage.setItem('role', data.role);
+        window.location.href = data.role === 'admin' ? 'admin.html' : 'student.html';
+      } else {
+        alert(data.message || 'Wrong login info!');
+      }
+    }
+  </script>
+</body>
+</html>

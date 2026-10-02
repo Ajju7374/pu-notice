@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Notice Board</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    body { background: #f8fafc; padding: 25px; }
+    .container { max-width: 750px; margin: 0 auto; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .btn-out { background: #64748b; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
+    .card { background: white; border-radius: 8px; padding: 18px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid #2563eb; }
+    .tag { font-size: 11px; padding: 3px 8px; border-radius: 4px; background: #e0e7ff; color: #1e40af; font-weight: bold; }
+    .time { font-size: 12px; color: #94a3b8; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h2 style="color: #1e3a8a;">📢 College Notice Board</h2>
+        <p style="font-size: 13px; color: #64748b;">Live Announcements</p>
+      </div>
+      <button class="btn-out" onclick="logout()">Logout</button>
+    </header>
+
+    <div id="board">Loading latest notices...</div>
+  </div>
+
+  <script>
+    if (sessionStorage.getItem('role') !== 'student') window.location.href = 'index.html';
+
+    async function fetchNotices() {
+      const res = await fetch('/api/notices');
+      const data = await res.json();
+      const board = document.getElementById('board');
+      if (data.length === 0) return board.innerHTML = '<p>No notices available right now.</p>';
+
+      board.innerHTML = data.map(n => `
+        <div class="card">
+          <span class="tag">${n.category}</span>
+          <h3 style="margin-top: 6px;">${n.title}</h3>
+          <p style="margin-top: 6px; color: #334155;">${n.message}</p>
+          <div class="time">Posted on: ${n.date}</div>
+        </div>
+      `).join('');
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    }
+
+    fetchNotices();
+    // Har 4 second me check karega naye notices ke liye
+    setInterval(fetchNotices, 4000);
+  </script>
+</body>
+</html>

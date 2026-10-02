@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+    body { background: #f8fafc; padding: 25px; }
+    .container { max-width: 750px; margin: 0 auto; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 25px; }
+    .field { margin-bottom: 12px; }
+    label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #334155; }
+    input, select, textarea { width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 6px; }
+    .btn-send { background: #16a34a; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-out { background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
+    .item { background: white; border-left: 4px solid #2563eb; padding: 15px; margin-bottom: 12px; border-radius: 6px; display: flex; justify-content: space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    .btn-del { background: #dc2626; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; height: fit-content; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h2>⚙️ Admin Notice Panel</h2>
+      <button class="btn-out" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="card">
+      <h3 style="margin-bottom: 12px; color: #1e3a8a;">Send Notice</h3>
+      <div class="field">
+        <label>Title</label>
+        <input type="text" id="title" placeholder="e.g. Exam Timetable Released">
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <select id="category">
+          <option value="General">General</option>
+          <option value="Exam Alert">Exam Alert</option>
+          <option value="Holiday">Holiday</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Details</label>
+        <textarea id="message" rows="3" placeholder="Notice details..."></textarea>
+      </div>
+      <button class="btn-send" onclick="sendNotice()">Post Notice</button>
+    </div>
+
+    <h3>All Active Notices</h3>
+    <div id="list" style="margin-top: 15px;">Loading...</div>
+  </div>
+
+  <script>
+    if (sessionStorage.getItem('role') !== 'admin') window.location.href = 'index.html';
+
+    async function load() {
+      const res = await fetch('/api/notices');
+      const data = await res.json();
+      const list = document.getElementById('list');
+      if (data.length === 0) return list.innerHTML = '<p>No notices yet.</p>';
+
+      list.innerHTML = data.map(n => `
+        <div class="item">
+          <div>
+            <b>[${n.category}]</b> <h4 style="display:inline;">${n.title}</h4>
+            <p style="margin-top: 5px; color: #475569;">${n.message}</p>
+            <small style="color: #94a3b8;">${n.date}</small>
+          </div>
+          <button class="btn-del" onclick="del('${n.id}')">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    async function sendNotice() {
+      const title = document.getElementById('title').value;
+      const category = document.getElementById('category').value;
+      const message = document.getElementById('message').value;
+      if (!title || !message) return alert('Please enter title & details');
+
+      await fetch('/api/notices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, category, message })
+      });
+      document.getElementById('title').value = '';
+      document.getElementById('message').value = '';
+      load();
+    }
+
+    async function del(id) {
+      await fetch('/api/notices/' + id, { method: 'DELETE' });
+      load();
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    }
+    load();
+  </script>
+</body>
+</html>
