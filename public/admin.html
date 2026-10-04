@@ -2,101 +2,235 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Dashboard</title>
+  <title>Admin Workspace - Campus Notify</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-    body { background: #f8fafc; padding: 25px; }
-    .container { max-width: 750px; margin: 0 auto; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 25px; }
-    .field { margin-bottom: 12px; }
-    label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #334155; }
-    input, select, textarea { width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 6px; }
-    .btn-send { background: #16a34a; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    .btn-out { background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
-    .item { background: white; border-left: 4px solid #2563eb; padding: 15px; margin-bottom: 12px; border-radius: 6px; display: flex; justify-content: space-between; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
-    .btn-del { background: #dc2626; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; height: fit-content; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background: #f8fafc; color: #1e293b; }
+    
+    .top-header {
+      background: #1e3a8a;
+      color: white;
+      padding: 12px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-icon { background: #3b82f6; width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; font-size: 16px; }
+    .brand-title { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+    .brand-sub { font-size: 11px; opacity: 0.8; }
+    
+    .header-actions { display: flex; align-items: center; gap: 20px; }
+    .live-clock { font-size: 12px; font-family: monospace; background: rgba(255,255,255,0.12); padding: 6px 12px; border-radius: 6px; }
+    .btn-logout { background: #ef4444; color: white; border: none; padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-logout:hover { background: #dc2626; }
+
+    .main-layout { max-width: 1200px; margin: 25px auto; padding: 0 20px; }
+
+    .work-grid { display: grid; grid-template-columns: 420px 1fr; gap: 25px; }
+    @media (max-width: 900px) { .work-grid { grid-template-columns: 1fr; } }
+
+    .card { background: white; border-radius: 12px; padding: 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+    .card-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: #2563eb; }
+    .btn-submit {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 11px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-submit:hover { background: #1d4ed8; }
+
+    .notice-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #2563eb;
+      padding: 14px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .badge { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: #e0e7ff; color: #1e40af; }
+    .badge-exam { background: #fee2e2; color: #b91c1c; }
+    .badge-minor { background: #f3e8ff; color: #7e22ce; }
+    .badge-major { background: #e0f2fe; color: #0369a1; }
+    .badge-holiday { background: #fef3c7; color: #b45309; }
+    .badge-announcement { background: #dcfce7; color: #15803d; }
+
+    .btn-del {
+      background: transparent;
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn-del:hover { background: #fee2e2; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h2>⚙️ Admin Notice Panel</h2>
-      <button class="btn-out" onclick="logout()">Logout</button>
-    </header>
 
-    <div class="card">
-      <h3 style="margin-bottom: 12px; color: #1e3a8a;">Send Notice</h3>
-      <div class="field">
-        <label>Title</label>
-        <input type="text" id="title" placeholder="e.g. Exam Timetable Released">
+ <header class="top-header">
+    <div class="brand">
+      <div class="brand-icon"><i class="fa-solid fa-building-columns"></i></div>
+      <div>
+        <div class="brand-title">POORNIMA UNIVERSITY • ADMIN CONSOLE</div>
+        <div class="brand-sub">Department of Computer Science & Engineering</div>
       </div>
-      <div class="field">
-        <label>Category</label>
-        <select id="category">
-          <option value="General">General</option>
-          <option value="Exam Alert">Exam Alert</option>
-          <option value="Holiday">Holiday</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Details</label>
-        <textarea id="message" rows="3" placeholder="Notice details..."></textarea>
-      </div>
-      <button class="btn-send" onclick="sendNotice()">Post Notice</button>
     </div>
 
-    <h3>All Active Notices</h3>
-    <div id="list" style="margin-top: 15px;">Loading...</div>
+    <div class="header-actions">
+      <div class="live-clock" id="clock">00:00:00 AM</div>
+      <button class="btn-logout" onclick="logout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <div class="work-grid">
+      <!-- Publish Form -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-paper-plane" style="color: #2563eb;"></i> Broadcast Department Notice
+        </div>
+
+        <div class="form-group">
+          <label>Circular Title</label>
+          <input type="text" id="title" placeholder="e.g. Minor Project Synopsis Submission">
+        </div>
+
+        <div class="form-group">
+          <label>Target Section / Category</label>
+          <select id="category">
+            <option value="Minor Project">💻 Minor Project Block</option>
+            <option value="Major Project">🚀 Major Project Block</option>
+            <option value="Exam Alert">🚨 Examination Cell</option>
+            <option value="Holiday">🌴 Institutional Holidays</option>
+            <option value="College Announcement">📢 College Announcements (General)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Notice Content</label>
+          <textarea id="message" rows="5" placeholder="Enter guidelines, deadlines, room allocations, rules..."></textarea>
+        </div>
+
+        <button class="btn-submit" onclick="publishNotice()">
+          <i class="fa-solid fa-tower-broadcast"></i> Publish Circular
+        </button>
+      </div>
+
+      <!-- Published List -->
+      <div class="card">
+        <div class="card-title">
+          <i class="fa-solid fa-list-check" style="color: #475569;"></i> Active Circulars Management
+        </div>
+        <div id="noticeCatalog">Loading notices...</div>
+      </div>
+    </div>
   </div>
 
   <script>
     if (sessionStorage.getItem('role') !== 'admin') window.location.href = 'index.html';
 
-    async function load() {
+    setInterval(() => {
+      document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+    }, 1000);
+
+    function getBadgeClass(cat) {
+      if (cat === 'Exam Alert') return 'badge-exam';
+      if (cat === 'Minor Project') return 'badge-minor';
+      if (cat === 'Major Project') return 'badge-major';
+      if (cat === 'Holiday') return 'badge-holiday';
+      return 'badge-announcement';
+    }
+
+    async function loadAdminData() {
       const res = await fetch('/api/notices');
       const data = await res.json();
-      const list = document.getElementById('list');
-      if (data.length === 0) return list.innerHTML = '<p>No notices yet.</p>';
+      const container = document.getElementById('noticeCatalog');
 
-      list.innerHTML = data.map(n => `
-        <div class="item">
+      if (data.length === 0) {
+        container.innerHTML = '<p style="font-size:13px; color:#64748b; padding:15px; text-align:center;">No published circulars currently active.</p>';
+        return;
+      }
+
+      container.innerHTML = data.map(n => `
+        <div class="notice-item">
           <div>
-            <b>[${n.category}]</b> <h4 style="display:inline;">${n.title}</h4>
-            <p style="margin-top: 5px; color: #475569;">${n.message}</p>
-            <small style="color: #94a3b8;">${n.date}</small>
+            <span class="badge ${getBadgeClass(n.category)}">${n.category}</span>
+            <div style="font-weight:700; font-size:14px; margin-top:5px; color:#0f172a;">${n.title}</div>
+            <div style="font-size:13px; color:#475569; margin:4px 0 6px 0; line-height:1.4;">${n.message}</div>
+            <div style="font-size:11px; color:#94a3b8;"><i class="fa-regular fa-clock"></i> ${n.date}</div>
           </div>
-          <button class="btn-del" onclick="del('${n.id}')">Delete</button>
+          <button class="btn-del" onclick="deleteCircular('${n.id}')" title="Delete notice">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
         </div>
       `).join('');
     }
 
-    async function sendNotice() {
-      const title = document.getElementById('title').value;
+    async function publishNotice() {
+      const title = document.getElementById('title').value.trim();
       const category = document.getElementById('category').value;
-      const message = document.getElementById('message').value;
-      if (!title || !message) return alert('Please enter title & details');
+      const message = document.getElementById('message').value.trim();
+
+      if (!title || !message) {
+        alert('Please fill both Title and Content fields!');
+        return;
+      }
 
       await fetch('/api/notices', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, category, message })
       });
+
       document.getElementById('title').value = '';
       document.getElementById('message').value = '';
-      load();
+      loadAdminData();
     }
 
-    async function del(id) {
-      await fetch('/api/notices/' + id, { method: 'DELETE' });
-      load();
+    async function deleteCircular(id) {
+      if (confirm('Delete this circular?')) {
+        await fetch('/api/notices/' + id, { method: 'DELETE' });
+        loadAdminData();
+      }
     }
 
     function logout() {
       sessionStorage.clear();
       window.location.href = 'index.html';
     }
-    load();
+
+    loadAdminData();
   </script>
 </body>
 </html>

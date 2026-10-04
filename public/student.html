@@ -2,48 +2,243 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Notice Board</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Self-Service Portal - Campus Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-    body { background: #f8fafc; padding: 25px; }
-    .container { max-width: 750px; margin: 0 auto; }
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .btn-out { background: #64748b; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
-    .card { background: white; border-radius: 8px; padding: 18px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-left: 5px solid #2563eb; }
-    .tag { font-size: 11px; padding: 3px 8px; border-radius: 4px; background: #e0e7ff; color: #1e40af; font-weight: bold; }
-    .time { font-size: 12px; color: #94a3b8; margin-top: 8px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background: #0f172a; color: #1e293b; min-height: 100vh; }
+
+    /* Top Nav */
+    .top-nav {
+      background: #1e293b;
+      color: white;
+      padding: 12px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .portal-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
+    .portal-logo i { color: #38bdf8; font-size: 18px; }
+    .btn-exit { background: #334155; border: none; color: white; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+    .btn-exit:hover { background: #475569; }
+
+    .container { max-width: 1350px; margin: 20px auto; padding: 0 15px; }
+
+    /* Student Banner */
+    .profile-strip {
+      background: white;
+      border-radius: 12px;
+      padding: 14px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      margin-bottom: 22px;
+    }
+    .student-meta { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 40px; height: 40px; background: #e0e7ff; color: #3730a3; border-radius: 50%; display: grid; place-items: center; font-size: 18px; }
+    .sync-indicator { font-size: 12px; color: #059669; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+
+    /* 5-BLOCKS GRID SYSTEM */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 20px;
+    }
+
+    /* BLOCK BASE STYLING */
+    .portal-block {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e2e8f0;
+      min-height: 260px;
+    }
+    .block-header {
+      padding: 12px 18px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .block-header h3 { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .count-pill { font-size: 11px; padding: 2px 8px; border-radius: 12px; background: rgba(255,255,255,0.25); font-weight: bold; }
+    
+    .block-body { padding: 14px; overflow-y: auto; max-height: 380px; flex: 1; background: #f8fafc; }
+
+    /* INDIVIDUAL THEMES */
+    /* 1. Exam (Red) */
+    .theme-exam .block-header { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+    .card-exam { background: #fef2f2; border-left: 4px solid #dc2626; border-color: #fee2e2; }
+
+    /* 2. Minor Project (Purple) */
+    .theme-minor .block-header { background: linear-gradient(135deg, #7e22ce, #6b21a8); }
+    .card-minor { background: #faf5ff; border-left: 4px solid #7e22ce; border-color: #f3e8ff; }
+
+    /* 3. Major Project (Sky Blue/Navy) */
+    .theme-major .block-header { background: linear-gradient(135deg, #0284c7, #0369a1); }
+    .card-major { background: #f0f9ff; border-left: 4px solid #0284c7; border-color: #e0f2fe; }
+
+    /* 4. Holiday (Amber/Orange) */
+    .theme-holiday .block-header { background: linear-gradient(135deg, #d97706, #b45309); }
+    .card-holiday { background: #fffbeb; border-left: 4px solid #d97706; border-color: #fef3c7; }
+
+    /* 5. General Announcement (Emerald Green) */
+    .theme-announcement .block-header { background: linear-gradient(135deg, #059669, #047857); }
+    .card-announcement { background: #f0fdf4; border-left: 4px solid #059669; border-color: #dcfce7; }
+
+    /* Notice Card Interior */
+    .card-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .card-box-title { font-weight: 700; font-size: 14px; color: #0f172a; margin-bottom: 5px; }
+    .card-box-desc { font-size: 13px; color: #475569; line-height: 1.5; }
+    .card-box-date { font-size: 11px; color: #94a3b8; margin-top: 8px; display: flex; align-items: center; gap: 5px; }
+
+    .empty-state { text-align: center; color: #94a3b8; font-size: 12px; padding: 35px 15px; }
+    .empty-state i { font-size: 26px; display: block; margin-bottom: 8px; opacity: 0.5; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div>
-        <h2 style="color: #1e3a8a;">📢 College Notice Board</h2>
-        <p style="font-size: 13px; color: #64748b;">Live Announcements</p>
-      </div>
-      <button class="btn-out" onclick="logout()">Logout</button>
-    </header>
 
-    <div id="board">Loading latest notices...</div>
+  <nav class="top-nav">
+    <div class="portal-logo">
+      <i class="fa-solid fa-building-columns"></i>
+      POORNIMA UNIVERSITY • STUDENT NOTICE HUB
+    </div>
+    <button class="btn-exit" onclick="logout()"><i class="fa-solid fa-power-off"></i> Logout</button>
+  </nav>
+
+  <div class="container">
+    <!-- Student Header -->
+    <div class="profile-strip">
+      <div class="student-meta">
+    <div class="avatar"><i class="fa-solid fa-user-graduate"></i></div>
+    <div>
+      <div style="font-weight: 700; font-size: 14px;">Poornima University Student Portal</div>
+      <div style="font-size: 12px; color: #64748b;">Department of Computer Science & Engineering</div>
+    </div>
+  </div>
+      <div class="sync-indicator">
+        <i class="fa-solid fa-arrows-rotate fa-spin"></i> Live Campus Feed Active
+      </div>
+    </div>
+
+    <!-- 5 DEDICATED SECTIONS GRID -->
+    <div class="dashboard-grid">
+
+      <!-- 1. EXAMINATION CELL BLOCK -->
+      <div class="portal-block theme-exam">
+        <div class="block-header">
+          <h3><i class="fa-solid fa-bell"></i> Examination Cell</h3>
+          <span class="count-pill" id="examCount">0</span>
+        </div>
+        <div class="block-body" id="examBox">Loading...</div>
+      </div>
+
+      <!-- 2. MINOR PROJECT BLOCK -->
+      <div class="portal-block theme-minor">
+        <div class="block-header">
+          <h3><i class="fa-solid fa-laptop-code"></i> Minor Project Corner</h3>
+          <span class="count-pill" id="minorCount">0</span>
+        </div>
+        <div class="block-body" id="minorBox">Loading...</div>
+      </div>
+
+      <!-- 3. MAJOR PROJECT BLOCK -->
+      <div class="portal-block theme-major">
+        <div class="block-header">
+          <h3><i class="fa-solid fa-rocket"></i> Major Project Hub</h3>
+          <span class="count-pill" id="majorCount">0</span>
+        </div>
+        <div class="block-body" id="majorBox">Loading...</div>
+      </div>
+
+      <!-- 4. INSTITUTIONAL HOLIDAYS BLOCK -->
+      <div class="portal-block theme-holiday">
+        <div class="block-header">
+          <h3><i class="fa-solid fa-calendar-days"></i> Institutional Holidays</h3>
+          <span class="count-pill" id="holidayCount">0</span>
+        </div>
+        <div class="block-body" id="holidayBox">Loading...</div>
+      </div>
+
+      <!-- 5. COLLEGE ANNOUNCEMENTS BLOCK -->
+      <div class="portal-block theme-announcement">
+        <div class="block-header">
+          <h3><i class="fa-solid fa-bullhorn"></i> College Announcements</h3>
+          <span class="count-pill" id="announcementCount">0</span>
+        </div>
+        <div class="block-body" id="announcementBox">Loading...</div>
+      </div>
+
+    </div>
   </div>
 
   <script>
     if (sessionStorage.getItem('role') !== 'student') window.location.href = 'index.html';
 
-    async function fetchNotices() {
-      const res = await fetch('/api/notices');
-      const data = await res.json();
-      const board = document.getElementById('board');
-      if (data.length === 0) return board.innerHTML = '<p>No notices available right now.</p>';
+    async function fetchAllNotices() {
+      try {
+        const res = await fetch('/api/notices');
+        const notices = await res.json();
+        distributeBlocks(notices);
+      } catch (e) {
+        console.error("Fetch error", e);
+      }
+    }
 
-      board.innerHTML = data.map(n => `
-        <div class="card">
-          <span class="tag">${n.category}</span>
-          <h3 style="margin-top: 6px;">${n.title}</h3>
-          <p style="margin-top: 6px; color: #334155;">${n.message}</p>
-          <div class="time">Posted on: ${n.date}</div>
+    function renderList(targetId, countId, items, cardClass, icon, emptyText) {
+      const container = document.getElementById(targetId);
+      document.getElementById(countId).innerText = items.length;
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-regular fa-circle-check"></i>
+            ${emptyText}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(n => `
+        <div class="card-box ${cardClass}">
+          <div class="card-box-title">${n.title}</div>
+          <div class="card-box-desc">${n.message}</div>
+          <div class="card-box-date"><i class="fa-regular fa-clock"></i> Announced: ${n.date}</div>
         </div>
       `).join('');
+    }
+
+    function distributeBlocks(notices) {
+      // 1. Exam Alert
+      const exams = notices.filter(n => n.category === 'Exam Alert');
+      renderList('examBox', 'examCount', exams, 'card-exam', 'fa-triangle-exclamation', 'No active exam alerts or timetables.');
+
+      // 2. Minor Project
+      const minor = notices.filter(n => n.category === 'Minor Project');
+      renderList('minorBox', 'minorCount', minor, 'card-minor', 'fa-laptop-code', 'No minor project updates posted.');
+
+      // 3. Major Project
+      const major = notices.filter(n => n.category === 'Major Project');
+      renderList('majorBox', 'majorCount', major, 'card-major', 'fa-rocket', 'No major project deadlines currently.');
+
+      // 4. Holiday
+      const holidays = notices.filter(n => n.category === 'Holiday');
+      renderList('holidayBox', 'holidayCount', holidays, 'card-holiday', 'fa-calendar-days', 'No upcoming institutional holidays.');
+
+      // 5. College Announcement
+      const announcements = notices.filter(n => n.category === 'College Announcement' || n.category === 'General');
+      renderList('announcementBox', 'announcementCount', announcements, 'card-announcement', 'fa-bullhorn', 'No general circulars posted.');
     }
 
     function logout() {
@@ -51,9 +246,8 @@
       window.location.href = 'index.html';
     }
 
-    fetchNotices();
-    // Har 4 second me check karega naye notices ke liye
-    setInterval(fetchNotices, 4000);
+    fetchAllNotices();
+    setInterval(fetchAllNotices, 4000); // Live poll har 4 second me
   </script>
 </body>
 </html>

@@ -2,63 +2,245 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login - College Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Portal - Secure Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-    body { background: #e2e8f0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 330px; }
-    h2 { text-align: center; color: #1e3a8a; margin-bottom: 20px; }
-    .field { margin-bottom: 15px; }
-    label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #475569; }
-    input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
-    button { width: 100%; padding: 10px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-    button:hover { background: #1d4ed8; }
-    .hint { margin-top: 15px; font-size: 12px; background: #f8fafc; padding: 10px; border-radius: 6px; color: #64748b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body {
+      background: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .portal-container {
+      background: #ffffff;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      width: 850px;
+      max-width: 100%;
+      min-height: 520px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
+    .hero-side {
+      flex: 1;
+      background: linear-gradient(135deg, #1e3a8a, #0284c7);
+      color: white;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .hero-side h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+    .hero-side p { font-size: 14px; opacity: 0.9; margin-top: 10px; line-height: 1.6; }
+    .feature-list { list-style: none; margin-top: 30px; }
+    .feature-list li { margin-bottom: 14px; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+    .feature-list i { background: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%; font-size: 12px; }
+    .erp-tag { font-size: 11px; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 20px; display: inline-block; width: fit-content; }
+    
+    .form-side {
+      flex: 1.1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .form-header h2 { color: #0f172a; font-size: 22px; font-weight: 700; }
+    .form-header span { color: #64748b; font-size: 13px; }
+    .role-toggle {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 4px;
+      margin: 20px 0;
+      gap: 4px;
+    }
+    .role-toggle button {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      background: transparent;
+      color: #64748b;
+      transition: all 0.2s;
+    }
+    .role-toggle button.active {
+      background: #ffffff;
+      color: #1e3a8a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .input-field {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-field i {
+      position: absolute;
+      left: 14px;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+    .input-field input {
+      width: 100%;
+      padding: 12px 14px 12px 40px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-field input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .btn-login {
+      width: 100%;
+      background: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .btn-login:hover { background: #172554; }
+    .credentials-hint {
+      margin-top: 20px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #64748b;
+    }
+    @media (max-width: 768px) {
+      .hero-side { display: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>College Portal</h2>
-    <div class="field">
-      <label>Login As</label>
-      <select id="role">
-        <option value="student">Student</option>
-        <option value="admin">Admin / Teacher</option>
-      </select>
+
+  <div class="portal-container">
+    <div class="hero-side">
+      <div>
+        <span class="erp-tag"><i class="fa-solid fa-shield-halved"></i> Campus Digital Portal</span>
+        <h1 style="margin-top: 15px;">POORNIMA UNIVERSITY</h1>
+        <p>Official Centralized Notice & Broadcast Management System.</p>
+        
+        <ul class="feature-list">
+          <li><i class="fa-solid fa-bolt"></i> Real-time academic circulars</li>
+          <li><i class="fa-solid fa-graduation-cap"></i> Examination cell alerts & datesheets</li>
+          <li><i class="fa-solid fa-laptop-code"></i> Minor & Major project tracking</li>
+        </ul>
+      </div>
+
+      <div style="font-size: 12px; opacity: 0.8;">
+        Faculty of Computer Science & Engineering &copy; 2026
+      </div>
     </div>
-    <div class="field">
-      <label>Username</label>
-      <input type="text" id="username" placeholder="Username">
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" id="password" placeholder="Password">
-    </div>
-    <button onclick="login()">Login</button>
-    <div class="hint">
-      <b>Admin:</b> admin / admin123<br>
-      <b>Student:</b> student / student123
+
+    <div class="form-side">
+      <div class="form-header">
+        <h2>Sign In to Portal</h2>
+        <span>Select role and enter your institutional credentials</span>
+      </div>
+
+      <div class="role-toggle">
+        <button id="btnStudent" class="active" onclick="setRole('student')">
+          <i class="fa-solid fa-user-graduate"></i> Student
+        </button>
+        <button id="btnAdmin" onclick="setRole('admin')">
+          <i class="fa-solid fa-user-tie"></i> Admin / Faculty
+        </button>
+      </div>
+
+      <input type="hidden" id="roleInput" value="student">
+
+      <div class="input-group">
+        <label>User Identifier</label>
+        <div class="input-field">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="username" placeholder="Username (e.g. student or admin)">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Access Password</label>
+        <div class="input-field">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="password" placeholder="••••••••">
+        </div>
+      </div>
+
+      <button class="btn-login" onclick="executeLogin()">
+        Secure Login <i class="fa-solid fa-arrow-right"></i>
+      </button>
+
+      <div class="credentials-hint">
+        <strong>Default Credentials:</strong><br>
+        Admin: <code>admin</code> / <code>admin123</code><br>
+        Student: <code>student</code> / <code>student123</code>
+      </div>
     </div>
   </div>
 
   <script>
-    async function login() {
-      const role = document.getElementById('role').value;
+    function setRole(role) {
+      document.getElementById('roleInput').value = role;
+      document.getElementById('btnStudent').classList.toggle('active', role === 'student');
+      document.getElementById('btnAdmin').classList.toggle('active', role === 'admin');
+    }
+
+    async function executeLogin() {
+      const role = document.getElementById('roleInput').value;
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
 
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role, username, password })
-      });
-      const data = await res.json();
+      if (!username || !password) {
+        alert('Please fill both Username and Password fields.');
+        return;
+      }
 
-      if (data.success) {
-        sessionStorage.setItem('role', data.role);
-        window.location.href = data.role === 'admin' ? 'admin.html' : 'student.html';
-      } else {
-        alert(data.message || 'Wrong login info!');
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role, username, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          sessionStorage.setItem('role', data.role);
+          window.location.href = data.role === 'admin' ? 'admin.html' : 'student.html';
+        } else {
+          alert(data.message || 'Authentication error: Invalid credentials');
+        }
+      } catch (err) {
+        alert('Server unreachable. Make sure the Node server is running.');
       }
     }
   </script>
