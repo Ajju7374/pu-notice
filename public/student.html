@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Self-Service Portal - Campus Hub</title>
+  <title>Student Self-Service Portal - Poornima University</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
@@ -24,9 +24,38 @@
     .btn-exit { background: #334155; border: none; color: white; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; }
     .btn-exit:hover { background: #475569; }
 
+    /* Breaking Ticker */
+    .ticker-bar {
+      background: #dc2626;
+      color: white;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      font-size: 12.5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .ticker-badge {
+      background: #991b1b;
+      padding: 8px 16px;
+      font-weight: 800;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 2;
+    }
+    .ticker-scroll { flex: 1; white-space: nowrap; overflow: hidden; padding-left: 20px; }
+    .ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 22s linear infinite;
+      font-weight: 600;
+    }
+    @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+
     .container { max-width: 1350px; margin: 20px auto; padding: 0 15px; }
 
-    /* Student Banner */
+    /* Student Banner & Quick Controls */
     .profile-strip {
       background: white;
       border-radius: 12px;
@@ -35,20 +64,58 @@
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      margin-bottom: 22px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
     .student-meta { display: flex; align-items: center; gap: 12px; }
     .avatar { width: 40px; height: 40px; background: #e0e7ff; color: #3730a3; border-radius: 50%; display: grid; place-items: center; font-size: 18px; }
-    .sync-indicator { font-size: 12px; color: #059669; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 
-    /* 5-BLOCKS GRID SYSTEM */
+    /* Global Search & Star Filter Toolbar */
+    .toolbar-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .search-bar {
+      flex: 1;
+      position: relative;
+      min-width: 280px;
+    }
+    .search-bar i { position: absolute; left: 14px; top: 12px; color: #94a3b8; }
+    .search-bar input {
+      width: 100%;
+      padding: 10px 14px 10px 40px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: white;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+    .search-bar input:focus { border-color: #38bdf8; }
+    .btn-star-filter {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f59e0b;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-star-filter.active { background: #f59e0b; color: #0f172a; border-color: #f59e0b; }
+
+    /* 5-BLOCKS GRID */
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
       gap: 20px;
     }
-
-    /* BLOCK BASE STYLING */
     .portal-block {
       background: white;
       border-radius: 12px;
@@ -68,74 +135,140 @@
     }
     .block-header h3 { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
     .count-pill { font-size: 11px; padding: 2px 8px; border-radius: 12px; background: rgba(255,255,255,0.25); font-weight: bold; }
-    
     .block-body { padding: 14px; overflow-y: auto; max-height: 380px; flex: 1; background: #f8fafc; }
 
-    /* INDIVIDUAL THEMES */
-    /* 1. Exam (Red) */
+    /* Colors */
     .theme-exam .block-header { background: linear-gradient(135deg, #dc2626, #b91c1c); }
-    .card-exam { background: #fef2f2; border-left: 4px solid #dc2626; border-color: #fee2e2; }
+    .card-exam { background: #fef2f2; border-left: 4px solid #dc2626; }
 
-    /* 2. Minor Project (Purple) */
     .theme-minor .block-header { background: linear-gradient(135deg, #7e22ce, #6b21a8); }
-    .card-minor { background: #faf5ff; border-left: 4px solid #7e22ce; border-color: #f3e8ff; }
+    .card-minor { background: #faf5ff; border-left: 4px solid #7e22ce; }
 
-    /* 3. Major Project (Sky Blue/Navy) */
     .theme-major .block-header { background: linear-gradient(135deg, #0284c7, #0369a1); }
-    .card-major { background: #f0f9ff; border-left: 4px solid #0284c7; border-color: #e0f2fe; }
+    .card-major { background: #f0f9ff; border-left: 4px solid #0284c7; }
 
-    /* 4. Holiday (Amber/Orange) */
     .theme-holiday .block-header { background: linear-gradient(135deg, #d97706, #b45309); }
-    .card-holiday { background: #fffbeb; border-left: 4px solid #d97706; border-color: #fef3c7; }
+    .card-holiday { background: #fffbeb; border-left: 4px solid #d97706; }
 
-    /* 5. General Announcement (Emerald Green) */
     .theme-announcement .block-header { background: linear-gradient(135deg, #059669, #047857); }
-    .card-announcement { background: #f0fdf4; border-left: 4px solid #059669; border-color: #dcfce7; }
+    .card-announcement { background: #f0fdf4; border-left: 4px solid #059669; }
 
-    /* Notice Card Interior */
+    /* Card Details */
     .card-box {
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       padding: 12px 14px;
       margin-bottom: 10px;
+      position: relative;
     }
-    .card-box-title { font-weight: 700; font-size: 14px; color: #0f172a; margin-bottom: 5px; }
+    .card-top-tags { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .card-branch-tag {
+      font-size: 10px;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: #334155;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .star-btn { color: #cbd5e1; font-size: 16px; cursor: pointer; transition: color 0.2s; }
+    .star-btn.starred { color: #f59e0b; }
+
+    .card-box-title { font-weight: 700; font-size: 14px; color: #0f172a; margin-bottom: 4px; }
     .card-box-desc { font-size: 13px; color: #475569; line-height: 1.5; }
-    .card-box-date { font-size: 11px; color: #94a3b8; margin-top: 8px; display: flex; align-items: center; gap: 5px; }
+    
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .card-box-date { font-size: 11px; color: #94a3b8; }
+    .btn-pdf {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #1e3a8a;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-pdf:hover { background: #eff6ff; border-color: #3b82f6; }
 
     .empty-state { text-align: center; color: #94a3b8; font-size: 12px; padding: 35px 15px; }
-    .empty-state i { font-size: 26px; display: block; margin-bottom: 8px; opacity: 0.5; }
+
+    /* Pop-up Notification Toaster */
+    .toast-popup {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1e3a8a;
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      display: none;
+      align-items: center;
+      gap: 12px;
+      z-index: 1000;
+      border-left: 4px solid #38bdf8;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Top Bar -->
   <nav class="top-nav">
     <div class="portal-logo">
       <i class="fa-solid fa-building-columns"></i>
-      POORNIMA UNIVERSITY • STUDENT NOTICE HUB
+      POORNIMA UNIVERSITY • STUDENT PORTAL
     </div>
     <button class="btn-exit" onclick="logout()"><i class="fa-solid fa-power-off"></i> Logout</button>
   </nav>
+
+  <!-- Ticker -->
+  <div class="ticker-bar">
+    <div class="ticker-badge"><i class="fa-solid fa-bolt"></i> BREAKING ALERTS</div>
+    <div class="ticker-scroll">
+      <div class="ticker-text" id="tickerContent">
+        Welcome to Poornima University Campus Notice System • Real-Time Synchronization Active.
+      </div>
+    </div>
+  </div>
 
   <div class="container">
     <!-- Student Header -->
     <div class="profile-strip">
       <div class="student-meta">
-    <div class="avatar"><i class="fa-solid fa-user-graduate"></i></div>
-    <div>
-      <div style="font-weight: 700; font-size: 14px;">Poornima University Student Portal</div>
-      <div style="font-size: 12px; color: #64748b;">Department of Computer Science & Engineering</div>
-    </div>
-  </div>
-      <div class="sync-indicator">
-        <i class="fa-solid fa-arrows-rotate fa-spin"></i> Live Campus Feed Active
+        <div class="avatar"><i class="fa-solid fa-user-graduate"></i></div>
+        <div>
+          <div style="font-weight: 700; font-size: 14px;">Academic Self-Service Portal</div>
+          <div style="font-size: 12px; color: #64748b;">Department of Computer Science & Engineering</div>
+        </div>
+      </div>
+      <div style="font-size: 12px; color: #059669; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+        <i class="fa-solid fa-arrows-rotate fa-spin"></i> Live Sync Active
       </div>
     </div>
 
-    <!-- 5 DEDICATED SECTIONS GRID -->
-    <div class="dashboard-grid">
+    <!-- Search & Star Toolbar -->
+    <div class="toolbar-row">
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="globalSearch" placeholder="Search notices across all blocks (e.g. viva, date, exam)..." oninput="applyFilters()">
+      </div>
+      <button class="btn-star-filter" id="starFilterBtn" onclick="toggleStarredOnly()">
+        <i class="fa-solid fa-star"></i> Starred Notices Only
+      </button>
+    </div>
 
-      <!-- 1. EXAMINATION CELL BLOCK -->
+    <!-- 5 BLOCKS GRID -->
+    <div class="dashboard-grid">
       <div class="portal-block theme-exam">
         <div class="block-header">
           <h3><i class="fa-solid fa-bell"></i> Examination Cell</h3>
@@ -144,7 +277,6 @@
         <div class="block-body" id="examBox">Loading...</div>
       </div>
 
-      <!-- 2. MINOR PROJECT BLOCK -->
       <div class="portal-block theme-minor">
         <div class="block-header">
           <h3><i class="fa-solid fa-laptop-code"></i> Minor Project Corner</h3>
@@ -153,7 +285,6 @@
         <div class="block-body" id="minorBox">Loading...</div>
       </div>
 
-      <!-- 3. MAJOR PROJECT BLOCK -->
       <div class="portal-block theme-major">
         <div class="block-header">
           <h3><i class="fa-solid fa-rocket"></i> Major Project Hub</h3>
@@ -162,7 +293,6 @@
         <div class="block-body" id="majorBox">Loading...</div>
       </div>
 
-      <!-- 4. INSTITUTIONAL HOLIDAYS BLOCK -->
       <div class="portal-block theme-holiday">
         <div class="block-header">
           <h3><i class="fa-solid fa-calendar-days"></i> Institutional Holidays</h3>
@@ -171,7 +301,6 @@
         <div class="block-body" id="holidayBox">Loading...</div>
       </div>
 
-      <!-- 5. COLLEGE ANNOUNCEMENTS BLOCK -->
       <div class="portal-block theme-announcement">
         <div class="block-header">
           <h3><i class="fa-solid fa-bullhorn"></i> College Announcements</h3>
@@ -179,66 +308,204 @@
         </div>
         <div class="block-body" id="announcementBox">Loading...</div>
       </div>
+    </div>
+  </div>
 
+  <!-- Toast -->
+  <div class="toast-popup" id="toast">
+    <i class="fa-solid fa-bell" style="font-size: 18px; color: #38bdf8;"></i>
+    <div>
+      <div style="font-weight: bold; font-size: 13px;" id="toastTitle">New Notice Broadcasted!</div>
+      <div style="font-size: 11px; opacity: 0.85;" id="toastMsg">Check your dashboard feed.</div>
     </div>
   </div>
 
   <script>
     if (sessionStorage.getItem('role') !== 'student') window.location.href = 'index.html';
 
+    let allNotices = [];
+    let previousCount = null;
+    let onlyStarred = false;
+
+    // Load starred from localStorage
+    function getStarredIds() {
+      return JSON.parse(localStorage.getItem('pu_starred') || '[]');
+    }
+
+    function toggleStar(id) {
+      let stars = getStarredIds();
+      if (stars.includes(id)) {
+        stars = stars.filter(item => item !== id);
+      } else {
+        stars.push(id);
+      }
+      localStorage.setItem('pu_starred', JSON.stringify(stars));
+      applyFilters();
+    }
+
+    function toggleStarredOnly() {
+      onlyStarred = !onlyStarred;
+      document.getElementById('starFilterBtn').classList.toggle('active', onlyStarred);
+      applyFilters();
+    }
+
+    // Play Audio Chime
+    function playNotificationSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.4);
+      } catch (e) {}
+    }
+
+    // Print Official Letterhead Circular PDF
+    function printOfficialNotice(title, category, branch, date, message) {
+      const win = window.open('', '_blank');
+      win.document.write(`
+        <html>
+        <head>
+          <title>Circular - ${title}</title>
+          <style>
+            body { font-family: 'Times New Roman', serif; padding: 40px; color: #000; line-height: 1.6; }
+            .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 25px; }
+            .univ-name { font-size: 22pt; font-weight: bold; letter-spacing: 1px; }
+            .sub-title { font-size: 13pt; margin-top: 4px; }
+            .ref-row { display: flex; justify-content: space-between; margin-bottom: 25px; font-size: 11pt; }
+            .circular-title { text-align: center; font-size: 16pt; font-weight: bold; text-decoration: underline; margin: 20px 0; }
+            .content { font-size: 12pt; text-align: justify; margin: 20px 0 40px 0; }
+            .footer { margin-top: 60px; display: flex; justify-content: space-between; font-size: 11pt; }
+            .stamp { border: 2px dashed #666; width: 120px; height: 60px; display: grid; place-items: center; color: #666; font-size: 10pt; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="univ-name">POORNIMA UNIVERSITY, JAIPUR</div>
+            <div class="sub-title">Department of Computer Science & Engineering • Academic Circular</div>
+          </div>
+          <div class="ref-row">
+            <div><strong>Ref No:</strong> PU/CSE/2026/NOT-${Math.floor(1000 + Math.random() * 9000)}</div>
+            <div><strong>Date of Notice:</strong> ${date}</div>
+          </div>
+          <div style="font-size: 11pt; margin-bottom: 15px;">
+            <strong>Target Section:</strong> ${category} | <strong>Target Branch:</strong> ${branch}
+          </div>
+          <div class="circular-title">${title}</div>
+          <div class="content">${message}</div>
+          <div class="footer">
+            <div class="stamp">[ Official Seal ]</div>
+            <div style="text-align: right;">
+              <div>____________________________</div>
+              <strong>Dr. Vipin Khattri</strong><br>
+              Professor, CSE Department<br>
+              Poornima University, Jaipur
+            </div>
+          </div>
+          <script>
+            window.onload = function() { window.print(); }
+          <\/script>
+        </body>
+        </html>
+      `);
+      win.document.close();
+    }
+
     async function fetchAllNotices() {
       try {
         const res = await fetch('/api/notices');
-        const notices = await res.json();
-        distributeBlocks(notices);
-      } catch (e) {
-        console.error("Fetch error", e);
+        allNotices = await res.json();
+
+        if (previousCount !== null && allNotices.length > previousCount) {
+          playNotificationSound();
+          const latest = allNotices[0];
+          const toast = document.getElementById('toast');
+          document.getElementById('toastTitle').innerText = latest.title;
+          document.getElementById('toastMsg').innerText = latest.message.substring(0, 45) + '...';
+          toast.style.display = 'flex';
+          setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        }
+        previousCount = allNotices.length;
+
+        updateTicker();
+        applyFilters();
+      } catch (e) {}
+    }
+
+    function updateTicker() {
+      const urgentOrExams = allNotices.filter(n => n.category === 'Exam Alert' || n.category === 'Minor Project');
+      if (urgentOrExams.length > 0) {
+        document.getElementById('tickerContent').innerText = 
+          urgentOrExams.map(n => `🔴 [${n.category} - ${n.branch || 'All'}]: ${n.title} — ${n.message}`).join('   ✦✦✦   ');
       }
     }
 
-    function renderList(targetId, countId, items, cardClass, icon, emptyText) {
+    function applyFilters() {
+      const q = document.getElementById('globalSearch').value.toLowerCase();
+      const stars = getStarredIds();
+
+      const filtered = allNotices.filter(n => {
+        const matchesQuery = n.title.toLowerCase().includes(q) || 
+                             n.message.toLowerCase().includes(q) || 
+                             (n.branch && n.branch.toLowerCase().includes(q));
+        const matchesStar = !onlyStarred || stars.includes(n.id);
+        return matchesQuery && matchesStar;
+      });
+
+      distribute(filtered);
+    }
+
+    function renderList(targetId, countId, items, cardClass, emptyText) {
       const container = document.getElementById(targetId);
       document.getElementById(countId).innerText = items.length;
+      const stars = getStarredIds();
 
       if (items.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <i class="fa-regular fa-circle-check"></i>
-            ${emptyText}
-          </div>
-        `;
+        container.innerHTML = `<div class="empty-state"><i class="fa-regular fa-circle-check"></i><br>${emptyText}</div>`;
         return;
       }
 
-      container.innerHTML = items.map(n => `
-        <div class="card-box ${cardClass}">
-          <div class="card-box-title">${n.title}</div>
-          <div class="card-box-desc">${n.message}</div>
-          <div class="card-box-date"><i class="fa-regular fa-clock"></i> Announced: ${n.date}</div>
-        </div>
-      `).join('');
+      container.innerHTML = items.map(n => {
+        const isStarred = stars.includes(n.id);
+        const safeTitle = n.title.replace(/'/g, "\\'");
+        const safeMsg = n.message.replace(/'/g, "\\'");
+        const safeCat = n.category.replace(/'/g, "\\'");
+        const safeBranch = (n.branch || 'All Branches').replace(/'/g, "\\'");
+        const safeDate = n.date.replace(/'/g, "\\'");
+
+        return `
+          <div class="card-box ${cardClass}">
+            <div class="card-top-tags">
+              <span class="card-branch-tag"><i class="fa-solid fa-graduation-cap"></i> ${n.branch || 'All Branches'}</span>
+              <i class="fa-star star-btn ${isStarred ? 'fa-solid starred' : 'fa-regular'}" 
+                 onclick="toggleStar('${n.id}')" title="Bookmark Notice"></i>
+            </div>
+            <div class="card-box-title">${n.title}</div>
+            <div class="card-box-desc">${n.message}</div>
+            <div class="card-actions">
+              <div class="card-box-date"><i class="fa-regular fa-clock"></i> ${n.date}</div>
+              <button class="btn-pdf" onclick="printOfficialNotice('${safeTitle}', '${safeCat}', '${safeBranch}', '${safeDate}', '${safeMsg}')">
+                <i class="fa-solid fa-file-pdf"></i> Official Circular
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
-    function distributeBlocks(notices) {
-      // 1. Exam Alert
-      const exams = notices.filter(n => n.category === 'Exam Alert');
-      renderList('examBox', 'examCount', exams, 'card-exam', 'fa-triangle-exclamation', 'No active exam alerts or timetables.');
-
-      // 2. Minor Project
-      const minor = notices.filter(n => n.category === 'Minor Project');
-      renderList('minorBox', 'minorCount', minor, 'card-minor', 'fa-laptop-code', 'No minor project updates posted.');
-
-      // 3. Major Project
-      const major = notices.filter(n => n.category === 'Major Project');
-      renderList('majorBox', 'majorCount', major, 'card-major', 'fa-rocket', 'No major project deadlines currently.');
-
-      // 4. Holiday
-      const holidays = notices.filter(n => n.category === 'Holiday');
-      renderList('holidayBox', 'holidayCount', holidays, 'card-holiday', 'fa-calendar-days', 'No upcoming institutional holidays.');
-
-      // 5. College Announcement
-      const announcements = notices.filter(n => n.category === 'College Announcement' || n.category === 'General');
-      renderList('announcementBox', 'announcementCount', announcements, 'card-announcement', 'fa-bullhorn', 'No general circulars posted.');
+    function distribute(notices) {
+      renderList('examBox', 'examCount', notices.filter(n => n.category === 'Exam Alert'), 'card-exam', 'No matching exam alerts.');
+      renderList('minorBox', 'minorCount', notices.filter(n => n.category === 'Minor Project'), 'card-minor', 'No minor project notices.');
+      renderList('majorBox', 'majorCount', notices.filter(n => n.category === 'Major Project'), 'card-major', 'No major project notices.');
+      renderList('holidayBox', 'holidayCount', notices.filter(n => n.category === 'Holiday'), 'card-holiday', 'No holidays found.');
+      renderList('announcementBox', 'announcementCount', notices.filter(n => n.category === 'College Announcement' || n.category === 'General'), 'card-announcement', 'No general circulars.');
     }
 
     function logout() {
@@ -247,7 +514,7 @@
     }
 
     fetchAllNotices();
-    setInterval(fetchAllNotices, 4000); // Live poll har 4 second me
+    setInterval(fetchAllNotices, 4000);
   </script>
 </body>
 </html>

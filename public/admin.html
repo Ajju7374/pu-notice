@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Workspace - Campus Notify</title>
+  <title>Admin Workspace - Poornima University</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
@@ -18,7 +18,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     .brand { display: flex; align-items: center; gap: 12px; }
-    .brand-icon { background: #3b82f6; width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; font-size: 16px; }
+    .brand-icon { background: #3b82f6; width: 38px; height: 38px; border-radius: 8px; display: grid; place-items: center; font-size: 18px; }
     .brand-title { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
     .brand-sub { font-size: 11px; opacity: 0.8; }
     
@@ -28,7 +28,6 @@
     .btn-logout:hover { background: #dc2626; }
 
     .main-layout { max-width: 1200px; margin: 25px auto; padding: 0 20px; }
-
     .work-grid { display: grid; grid-template-columns: 420px 1fr; gap: 25px; }
     @media (max-width: 900px) { .work-grid { grid-template-columns: 1fr; } }
 
@@ -46,20 +45,35 @@
       outline: none;
     }
     input:focus, select:focus, textarea:focus { border-color: #2563eb; }
-    .btn-submit {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 11px 18px;
+
+    .btn-row { display: flex; gap: 10px; margin-top: 8px; }
+    .btn-preview {
+      flex: 1;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      padding: 12px;
       font-size: 13px;
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
-      width: 100%;
+    }
+    .btn-preview:hover { background: #e2e8f0; }
+
+    .btn-submit {
+      flex: 1.4;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
     }
     .btn-submit:hover { background: #1d4ed8; }
 
@@ -76,11 +90,7 @@
       gap: 12px;
     }
     .badge { font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: #e0e7ff; color: #1e40af; }
-    .badge-exam { background: #fee2e2; color: #b91c1c; }
-    .badge-minor { background: #f3e8ff; color: #7e22ce; }
-    .badge-major { background: #e0f2fe; color: #0369a1; }
-    .badge-holiday { background: #fef3c7; color: #b45309; }
-    .badge-announcement { background: #dcfce7; color: #15803d; }
+    .badge-branch { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; margin-left: 5px; }
 
     .btn-del {
       background: transparent;
@@ -92,16 +102,36 @@
       cursor: pointer;
     }
     .btn-del:hover { background: #fee2e2; }
+
+    /* Modal Styling */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-box {
+      background: white;
+      max-width: 500px;
+      width: 100%;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    }
   </style>
 </head>
 <body>
 
- <header class="top-header">
+  <header class="top-header">
     <div class="brand">
       <div class="brand-icon"><i class="fa-solid fa-building-columns"></i></div>
       <div>
         <div class="brand-title">POORNIMA UNIVERSITY • ADMIN CONSOLE</div>
-        <div class="brand-sub">Department of Computer Science & Engineering</div>
+        <div class="brand-sub">Academic Broadcast & Circular Dissemination Desk</div>
       </div>
     </div>
 
@@ -118,41 +148,75 @@
       <!-- Publish Form -->
       <div class="card">
         <div class="card-title">
-          <i class="fa-solid fa-paper-plane" style="color: #2563eb;"></i> Broadcast Department Notice
+          <i class="fa-solid fa-paper-plane" style="color: #2563eb;"></i> Broadcast Institutional Circular
         </div>
 
         <div class="form-group">
           <label>Circular Title</label>
-          <input type="text" id="title" placeholder="e.g. Minor Project Synopsis Submission">
+          <input type="text" id="title" placeholder="e.g. Schedule of 7th Sem Minor Viva">
         </div>
 
         <div class="form-group">
-          <label>Target Section / Category</label>
+          <label>Target Section</label>
           <select id="category">
-            <option value="Minor Project">💻 Minor Project Block</option>
-            <option value="Major Project">🚀 Major Project Block</option>
-            <option value="Exam Alert">🚨 Examination Cell</option>
-            <option value="Holiday">🌴 Institutional Holidays</option>
-            <option value="College Announcement">📢 College Announcements (General)</option>
+            <option value="Minor Project"> Minor Project Corner</option>
+            <option value="Major Project"> Major Project Hub</option>
+            <option value="Exam Alert"> Examination Cell</option>
+            <option value="Holiday"> Institutional Holidays</option>
+            <option value="College Announcement"> College Announcements</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Target Department / Branch</label>
+          <select id="branch">
+            <option value="All Departments">All Departments (General)</option>
+            <option value="CSE">Computer Science & Engineering (CSE)</option>
+            <option value="AI & Data Science">Artificial Intelligence & Data Science</option>
+            <option value="Civil & Mech">Civil / Mechanical Engineering</option>
           </select>
         </div>
 
         <div class="form-group">
           <label>Notice Content</label>
-          <textarea id="message" rows="5" placeholder="Enter guidelines, deadlines, room allocations, rules..."></textarea>
+          <textarea id="message" rows="4" placeholder="Enter circular details, timing, deadlines..."></textarea>
         </div>
 
-        <button class="btn-submit" onclick="publishNotice()">
-          <i class="fa-solid fa-tower-broadcast"></i> Publish Circular
-        </button>
+        <div class="btn-row">
+          <button class="btn-preview" onclick="openPreview()"><i class="fa-regular fa-eye"></i> Preview</button>
+          <button class="btn-submit" onclick="publishNotice()"><i class="fa-solid fa-tower-broadcast"></i> Publish</button>
+        </div>
       </div>
 
       <!-- Published List -->
       <div class="card">
         <div class="card-title">
-          <i class="fa-solid fa-list-check" style="color: #475569;"></i> Active Circulars Management
+          <i class="fa-solid fa-list-check" style="color: #475569;"></i> Active Circulars Database
         </div>
         <div id="noticeCatalog">Loading notices...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Preview Modal -->
+  <div class="modal-backdrop" id="previewModal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h4 style="color: #0f172a; font-size: 15px;"><i class="fa-solid fa-desktop"></i> Student Viewport Preview</h4>
+        <button onclick="closePreview()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #64748b;">&times;</button>
+      </div>
+      
+      <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #2563eb; padding: 15px; border-radius: 8px;">
+        <span id="prevBadge" style="font-size: 10px; font-weight: 700; background: #e0e7ff; color: #1e40af; padding: 2px 6px; border-radius: 4px;"></span>
+        <span id="prevBranch" style="font-size: 10px; font-weight: 700; background: #f1f5f9; color: #334155; padding: 2px 6px; border-radius: 4px; border: 1px solid #cbd5e1; margin-left: 4px;"></span>
+        <div id="prevTitle" style="font-weight: 700; font-size: 15px; color: #0f172a; margin: 8px 0 4px 0;"></div>
+        <div id="prevMsg" style="font-size: 13px; color: #475569; line-height: 1.5;"></div>
+        <div style="font-size: 11px; color: #94a3b8; margin-top: 10px;"><i class="fa-regular fa-clock"></i> Announced: Just now</div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+        <button onclick="closePreview()" style="padding: 8px 14px; border: 1px solid #cbd5e1; background: white; border-radius: 6px; cursor: pointer;">Edit More</button>
+        <button onclick="closePreview(); publishNotice();" style="padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Confirm & Broadcast</button>
       </div>
     </div>
   </div>
@@ -164,12 +228,21 @@
       document.getElementById('clock').innerText = new Date().toLocaleTimeString();
     }, 1000);
 
-    function getBadgeClass(cat) {
-      if (cat === 'Exam Alert') return 'badge-exam';
-      if (cat === 'Minor Project') return 'badge-minor';
-      if (cat === 'Major Project') return 'badge-major';
-      if (cat === 'Holiday') return 'badge-holiday';
-      return 'badge-announcement';
+    function openPreview() {
+      const title = document.getElementById('title').value.trim() || 'Untitled Notice';
+      const category = document.getElementById('category').value;
+      const branch = document.getElementById('branch').value;
+      const message = document.getElementById('message').value.trim() || 'No description provided.';
+
+      document.getElementById('prevBadge').innerText = category;
+      document.getElementById('prevBranch').innerText = branch;
+      document.getElementById('prevTitle').innerText = title;
+      document.getElementById('prevMsg').innerText = message;
+      document.getElementById('previewModal').style.display = 'flex';
+    }
+
+    function closePreview() {
+      document.getElementById('previewModal').style.display = 'none';
     }
 
     async function loadAdminData() {
@@ -185,7 +258,8 @@
       container.innerHTML = data.map(n => `
         <div class="notice-item">
           <div>
-            <span class="badge ${getBadgeClass(n.category)}">${n.category}</span>
+            <span class="badge">${n.category}</span>
+            <span class="badge badge-branch"><i class="fa-solid fa-tag"></i> ${n.branch || 'All Branches'}</span>
             <div style="font-weight:700; font-size:14px; margin-top:5px; color:#0f172a;">${n.title}</div>
             <div style="font-size:13px; color:#475569; margin:4px 0 6px 0; line-height:1.4;">${n.message}</div>
             <div style="font-size:11px; color:#94a3b8;"><i class="fa-regular fa-clock"></i> ${n.date}</div>
@@ -200,17 +274,18 @@
     async function publishNotice() {
       const title = document.getElementById('title').value.trim();
       const category = document.getElementById('category').value;
+      const branch = document.getElementById('branch').value;
       const message = document.getElementById('message').value.trim();
 
       if (!title || !message) {
-        alert('Please fill both Title and Content fields!');
+        alert('Please fill Title and Content fields!');
         return;
       }
 
       await fetch('/api/notices', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, category, message })
+        body: JSON.stringify({ title, category, branch, message })
       });
 
       document.getElementById('title').value = '';
